@@ -1,7 +1,7 @@
 ---
 layout: post
 title:      "Challenge Accepted"
-date:       2020-07-20 05:51:02 +0000
+date:       2020-07-20 01:51:03 -0400
 permalink:  challenge_accepted
 ---
 
@@ -13,6 +13,38 @@ The challenge was very intimidating. However, I had three things in my arsenal t
 
 2. I'm a formidable opponent.
 
-3. Sinatra ended because incredibly easy to understand and use. The idea of creating a web application with user authentication sounded daunting, but Sinatra's user-friendly methods and versatility made building my first web application much more digestible than I would have imagined. I'm very interested in whatever Rails has to offer.
+3. Sinatra ended because incredibly easy to understand and use. The idea of creating a web application with user authentication sounded daunting, but Sinatra's user-friendly methods and versatility made building my first web application much more digestible than I would have imagined. Specifically, I wondered how my server would know which user is signed in. This process is actually quite simple when broken down with the tools offered by Sinatra:
+
+				1		post '/login' do   
+				
+				# when a post request is made to  '/login' 
+				
+				2			@user = User.find_by_username(params[:user][:username]) 
+				
+				# make this user the the user that is found in a database of users whose username matches the one passed in from             the  previous 'get' request. Before a username was created at signup it was validated for uniqueness. It's a good                     primary key to use
+				
+				3				if @user && @user.authenticate(params[:user][:password])
+				
+				# if a user is found in the previous line and the user's password that was also retrieved in get '/login' is that user's                   password...the password authentication is made available by line 3 in user.rb 'has_secure_password'. This takes                   whatever password the user creates, it interpolates random characters to make it even more unique and secure.                   When #athenticate is called in line three of this code, it triggers the authentication of the password by matching what          the user provided at get '/login' what was established as the user's password during signup despite the extra layer              of secure provided by password disgest
+				
+				4					session[:user_id] = @user.id
+				
+				# if the previous line was truthy, the user for this session is this particular user and no other one. The session hash               keeps track of which user is logged in preventing a user from continuously having to re-login everytime a page is                 requested
+				
+				5					redirect '/charts'
+				
+				#after making the current session belong to the user found in line 2, authenticated in line 3, and assigned to this                   session in line 4, redirect to the '/charts'. This will only show that user's information since the user is now logged-in
+				6			else
+				
+				#  if line 3 is falsey...
+				
+				7					erb :'sessions/new'
+				
+				#rerender erb:'sessions/new' which is called in get '/login' or retry signing up because there was an error. 
+				
+				8				end 
+				9 	end
+
+I'm excited to see how rails will make this process even simpler!
 
 In the end, we all made it safely through the journey. Instead of traveling back to Colorado, we did a Grand Tour of sorts to be with family and friends while we power through this expansive phase in our lives. Since beginning Flatiron School, I've had significant growth as a software developer, artist, and entrepreneur. There's no doubt in my mind that these things are all closely intertwined. I've realized that seizing opportunities is more of a challenging balancing act than anything.
