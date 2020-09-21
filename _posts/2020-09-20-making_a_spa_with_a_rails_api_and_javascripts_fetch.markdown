@@ -1,6 +1,6 @@
 ---
 layout: post
-title:      "Making a Single Page Application with Rails API and Javascript's fetch()"
+title:      "Making a GET request with Rails API and Javascript's fetch()"
 date:       2020-09-20 21:21:34 -0400
 permalink:  making_a_spa_with_a_rails_api_and_javascripts_fetch
 ---
