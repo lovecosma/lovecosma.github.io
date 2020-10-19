@@ -6,7 +6,7 @@ permalink:  user_authentication_with_react-redux
 ---
 
 
-I will explain how I achieved user authentication using Ruby on Rails api and a React-redux application. I will then demonstrate how to keep a user logged in through a page refresh. 
+I will explain how to set up user authentication for a React-Redux app using a Ruby on Rails API.
 
 To complete this, we will need gem 'bcrypt', gem 'rack-cors' as dependencies. You can uncomment them in the gem file or add them if they aren't there. Then run:
 
