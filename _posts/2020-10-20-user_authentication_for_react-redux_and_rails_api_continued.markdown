@@ -226,10 +226,10 @@ return (
 <h2>Login</h2>
 <form onSubmit={this.handleSubmit}>
 <div >
-<input onChange={this.handleChange} type="text" name="email" placeholder="Email" style={{display: "block"},{width: "750px"}}></input>
+<input onChange={this.handleChange} type="text" name="email" placeholder="Email"></input>
 </div>
 <div>
-<input onChange={this.handleChange} type="password" name="password" placeholder={'Password'} style={{display: "block"},{width: "750px"}}></input>
+<input onChange={this.handleChange} type="password" name="password" placeholder={'Password'}></input>
 </div>
 <button type='submit' name='submit' id='submit'>Login</button>
 </form> 
