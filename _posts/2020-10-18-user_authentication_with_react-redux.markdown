@@ -43,9 +43,14 @@ port        ENV.fetch("PORT") { 3001 } //Initial set to 3000. Setting to 3001.
 Now we are ready to start building our user model. Run:
 
 ```
-rails g scaffold email password_digest passwrod_confirmation
+rails g scaffold email password_digest 
 rails db:migrate
-=>
+
+```
+
+Add you should see:
+
+```
 create    db/migrate/20201019145923_create_users.rb
       create    app/models/user.rb
       invoke    test_unit
@@ -60,8 +65,7 @@ create    db/migrate/20201019145923_create_users.rb
 
 ```
 
-
-This will create a scaffold for the users table that accepts the listed attributes. The user model will need to accept  a password digest in order to add layers of security to the authentication process. This is being made available by gem 'bcrypt'. To account for this, we must add to the users model:
+ To account for the password_digest we must add to the users model:
 
 ```
 // users.rb
@@ -70,110 +74,89 @@ has_secure_password
 end 
 ```
 
-We should be able to create a new user as long as we pass it the required values. For instance, if we run:
+We should be able to create a new user as long as we pass it the required values. For instance, if in the console we run:
 
 ```
-//console
-
 rails c
-user = User.create(email: "test@test.com", password_digest: "12345678", password_confirmation: "12345678")
-	 
+
+User.create(email: "test@test.com", password_digest: "12345678", password_confirmation: "12345678")
 	 
  => #<User id: 1, email: "test@test.com", password_digest: [FILTERED], password_confirmation: nil, created_at: "2020-10-19 15:08:27", updated_at: "2...
 ```
 
-Now a user exists on the backend. If we run our server, that user's information is now being served on the API. Now we must create a session controller to keep track of the session. Run:
+Now a user exists on the backend for user to log in. In the future, this user-creation process would be handled by something like a 'user#create' action in the users controller. 
 
 ```
 rails g controller sessions
 ```
 
-Set up some helper methods in the application controller:
-
-```
-class ApplicationController < ActionController::Base
-skip_before_action :verify_authenticity_token
-helper_method :login!, :logged_in?, :current_user,     :authorized_user?, :logout!, :set_user
-    
-def login!
-      session[:user_id] = @user.id
-end
-def logged_in?
-      !!session[:user_id]
-end
-def current_user
-      @current_user = User.find(session[:user_id]) if session[:user_id]
-end
-def authorized_user?
-       @user == current_user
-end
-def logout!
-       session.clear
-end
-def set_user
-    @user = User.find_by(id: session[:user_id])
-end
-end
-
-```
 
 Adjust the sessions controller as such:
 
 ```
 /app/controllers/sessions_controller.rb
 
+
 class SessionsController < ApplicationController
 
     def create
-		
-        @user = User.find_by(email: session_params[:email]) 
-      
-        if @user && @user.authenticate(session_params[:password])
-          login!
-          render json: {
-            status: 200,
-            logged_in: true,
-            user: @user
-          }
+        @user = User.find_by_email(user_params[:email])  
+				
+        if @user && @user.authenticate(user_params[:password]) 
+				
+        session[:user_id] = @user.id  
+        render json: @user 
+				
         else
-          render json: { 
-            status: 401,
-            errors: ['no such user, please try again']
-          }
+				
+            render json: { 
+                status: 401,
+                errors: ['no such user, please try again']
+              }
+							
         end
-    end
-		
-		
-    def destroy
-          logout!
-          render json: {
-            status: 200,
-            logged_out: true
-          }
-    end
-		
-    private
-    def session_params
-          params.require(:user).permit(:email, :password)
-    end
-    end
-		
-		```
-		
-		
-	Params will be comming from the user login page in the React frame work. Almost done setting up the Rails side. Lastly, we must create the routes to allow us to make requests:
+				
+      end
+			
+      private
+			
+  def user_params
+    params.require(:user).permit(:email, :password)
+  end
 	
-	```
-	/config/routes.rb
-	
-	Rails.application.routes.draw do
-  post '/login',    to: 'sessions#create'
-  post '/logout',   to: 'sessions#destroy'
-  resources :users
-  # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
 ```
 
+
+ Essentially, the login action will find the user that matches the email passed through params. If the user exists and their password is correct., (#bcrypt), that user is the the user of this session. Then render that user as json and send it as a response. If the user does not exist or their password_digest coukldn't be authenticated, it will send an error message. While we're at it, let's add a destroy action for logging out:
+ 
+ ```
+ /app/controllers/sessions_controller.rb
+ 
+ ...
+ 
+ def destroy
+ 
+    session.clear
+    redirect_to root_path
+		
+  end
+	```
+ 
+ Next, let's set up the login/logout route:
+ 
+ 
+ ```
+ /config/routes.rb
+ 
+ Rails.application.routes.draw do
+  resources :users
+  post "/login", to: 'sessions#create'
+	 post "/logout", to: 'sessions#destroy'
+end
+```
+ 
+ 
 If we run in the terminal:
 
 ```
@@ -190,6 +173,6 @@ DELETE /users/:id(.:format)                                                     
 ```
 
 
-Everything we need to create a user and login is now set up and ready. We can start configuring our front end. In my next blog, I will be continbuing this concept and connecting the readct-redux front end.
+Everything we need to create a user and login is now set up and ready. We can start configuring our front end. The frontend will make fetch requests to this API with the React-Redux framework. In my next blog, I will be continbuing this concept.
 
 
