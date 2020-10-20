@@ -10,8 +10,8 @@ permalink:  user_authentication_for_react-redux_and_rails_api_continued
  
  The dependencies for this in addition to the properly configured Rails API are:
 
- 'react'
- 'redux'
+'react'
+'redux'
 'react-dom
 'react-redux'
 'redux-thunk'
