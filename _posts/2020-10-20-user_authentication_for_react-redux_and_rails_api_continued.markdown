@@ -6,12 +6,12 @@ permalink:  user_authentication_for_react-redux_and_rails_api_continued
 ---
 
 
-In my previous post, I set up a user model in a Rails API. In this post, we will discuss how to complete user authentication in React-Redux for a single page application, and how to persist login through a refresh of the page. 
+ In my previous post, I set up a user model in a Rails API. In this post, we will discuss how to complete user authentication in React-Redux for a single page application, and how to persist login through a refresh of the page. 
+ 
+ The dependencies for this in addition to the properly configured Rails API are:
 
-The dependencies for this in addition to the properly configured Rails API are:
-
-'react'
-'redux'
+ 'react'
+ 'redux'
 'react-dom
 'react-redux'
 'redux-thunk'
@@ -40,10 +40,10 @@ import ReactDOM from 'react-dom';
 import App from './App';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
+<React.StrictMode>
+<App />
+</React.StrictMode>,
+document.getElementById('root')
 );
 
 ```
@@ -55,11 +55,11 @@ ReactDOM.render(
 import React from 'react';
 
 function App() {
-  return (
-    <div>
-      <h1>Login</h1>
-    </div>
-  );
+return (
+<div>
+<h1>Login</h1>
+</div>
+);
 }
 
 export default App;
@@ -86,12 +86,12 @@ import App from './App'
 const store = createStore(rootReducer, applyMiddleware(thunk))
 
 ReactDOM.render(
-  <React.StrictMode>
-     <Provider store={store} >
-        <App/>
-      </Provider>
-  </React.StrictMode>,
-  document.getElementById('root')
+<React.StrictMode>
+<Provider store={store} >
+<App/>
+</Provider>
+</React.StrictMode>,
+document.getElementById('root')
 );
 ```
 
@@ -109,7 +109,7 @@ import usersReducer from './usersReducer'
 
 
 const rootReducer = combineReducers({
-    usersReducer
+usersReducer
 })
 
 export default rootReducer
@@ -122,65 +122,65 @@ Here we are making a rootReducer that will combine all other future reducers usi
 /src/reducers/usersReducer
 
 function usersReducer(state = { isLoggedIn: false, user: {},  requesting: false } , action) {
-    switch (action.type) {
+switch (action.type) {
 
-    case 'START_ADDING_USER_REQUEST':
-        return {
-            ...state,
-            requesting: true
-        }
-        
-    case 'LOGIN':
-        return {
-            isLoggedIn: true,
-            user: {...action.user},
-            requesting: false
-    }
+case 'START_ADDING_USER_REQUEST':
+return {
+...state,
+requesting: true
+}
 
-    case 'LOGOUT':
-        return {
-            isLoggedIn: false,
-            user: {},
-            requesting: false
-    } 
-      default:
-        return state;
-    }
-  };
+case 'LOGIN':
+return {
+isLoggedIn: true,
+user: {...action.user},
+requesting: false
+}
+
+case 'LOGOUT':
+return {
+isLoggedIn: false,
+user: {},
+requesting: false
+} 
+default:
+return state;
+}
+};
 
 
-  export default usersReducer
-	```
-	
-	The users reducer will contain info about whether or not a user is loggedIn, which user, and whether the info has been retrieved from the server yet. These are the basic actions that will need to create a session for a user. Next, let's set up the actions that will trigger changes in this reducer. Add a new directory to src called 'actions' and inside create a new file called 'userLogin.js'
-	
-	```
-	/src/actions/userLogin.js
-	
-	
+export default usersReducer
+```
+
+The users reducer will contain info about whether or not a user is loggedIn, which user, and whether the info has been retrieved from the server yet. These are the basic actions that will need to create a session for a user. Next, let's set up the actions that will trigger changes in this reducer. Add a new directory to src called 'actions' and inside create a new file called 'userLogin.js'
+
+```
+/src/actions/userLogin.js
+
+
 const userLogin = user => {
-    return dispatch => {
-        dispatch({ type: 'START_ADDING_USER_REQUEST' })
-        const formData = {
-                user
-            }
-         const configObj = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(formData)
-         }
-        fetch('http://localhost:3001/login', configObj)
-        .then(resp => resp.json())
-        .then(user => {
-				console.log(user)
-          dispatch({type: 'LOGIN', user})
-        })
-          .catch(error => console.log('api errors:', error))
-        };
-    }
+return dispatch => {
+dispatch({ type: 'START_ADDING_USER_REQUEST' })
+const formData = {
+user
+}
+const configObj = {
+method: "POST",
+headers: {
+"Accept": "application/json",
+"Content-Type": "application/json"
+},
+body: JSON.stringify(formData)
+}
+fetch('http://localhost:3001/login', configObj)
+.then(resp => resp.json())
+.then(user => {
+console.log(user)
+dispatch({type: 'LOGIN', user})
+})
+.catch(error => console.log('api errors:', error))
+};
+}
 
 export default userLogin
 ```
@@ -198,45 +198,45 @@ import { connect } from 'react-redux'
 
 export class LoginForm extends Component {
 
-    state = {
-        email: "",
-        password: ""
-    }
+state = {
+email: "",
+password: ""
+}
 
-    handleChange = event => {
-        this.setState({
-            [event.target.name]: event.target.value
-        })
-    }
+handleChange = event => {
+this.setState({
+[event.target.name]: event.target.value
+})
+}
 
-    handleSubmit = event => {
-        event.preventDefault()
-        this.setState({
-            email: "",
-            password: ""
-        })
-        this.props.userLogin(this.state)
-    }
+handleSubmit = event => {
+event.preventDefault()
+this.setState({
+email: "",
+password: ""
+})
+this.props.userLogin(this.state)
+}
 
-    render() {
-        return (
-            <div>
+render() {
+return (
+<div>
 
-            <div>
-                <h2>Login</h2>
-               <form onSubmit={this.handleSubmit}>
-                   <div >
-                    <input onChange={this.handleChange} type="text" name="email" placeholder="Email" style={{display: "block"},{width: "750px"}}></input>
-                   </div>
-                   <div>
-                    <input onChange={this.handleChange} type="password" name="password" placeholder={'Password'} style={{display: "block"},{width: "750px"}}></input>
-                   </div>
-                    <button type='submit' name='submit' id='submit'>Login</button>
-                 </form> 
-            </div>
-            </div>
-        )
-    }
+<div>
+<h2>Login</h2>
+<form onSubmit={this.handleSubmit}>
+<div >
+<input onChange={this.handleChange} type="text" name="email" placeholder="Email" style={{display: "block"},{width: "750px"}}></input>
+</div>
+<div>
+<input onChange={this.handleChange} type="password" name="password" placeholder={'Password'} style={{display: "block"},{width: "750px"}}></input>
+</div>
+<button type='submit' name='submit' id='submit'>Login</button>
+</form> 
+</div>
+</div>
+)
+}
 }
 
 
@@ -256,11 +256,11 @@ import React from 'react';
 import LoginForm from './components/LoginForm'
 
 function App() {
-  return (
-    <div className="App">
-      <LoginForm/>
-    </div>
-  );
+return (
+<div className="App">
+<LoginForm/>
+</div>
+);
 }
 
 export default App;
@@ -285,32 +285,32 @@ in userLogin:
 /src/actions/userLogin
 
 const userLogin = user => {
-    return dispatch => {
-        dispatch({ type: 'START_ADDING_USER_REQUEST' })
-        const formData = {
-                user
-            }
-         const configObj = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(formData)
-         }
-        fetch('http://localhost:3001/login', configObj)
-        .then(resp => resp.json())
-        .then(user => {
-            if (user) {
-              localStorage.setItem('user', JSON.stringify(session.user)) // Store the user locally
-              dispatch({type:"LOGIN", user: user}) //Then log them in
-            } else {
-                console.log(user.errors)
-            }
-          })
-          .catch(error => console.log('api errors:', error))
-        };
-    }
+return dispatch => {
+dispatch({ type: 'START_ADDING_USER_REQUEST' })
+const formData = {
+user
+}
+const configObj = {
+method: "POST",
+headers: {
+"Accept": "application/json",
+"Content-Type": "application/json"
+},
+body: JSON.stringify(formData)
+}
+fetch('http://localhost:3001/login', configObj)
+.then(resp => resp.json())
+.then(user => {
+if (user) {
+localStorage.setItem('user', JSON.stringify(session.user)) // Store the user locally
+dispatch({type:"LOGIN", user: user}) //Then log them in
+} else {
+console.log(user.errors)
+}
+})
+.catch(error => console.log('api errors:', error))
+};
+}
 
 export default userLogin
 
@@ -334,51 +334,51 @@ This line stores the current user's information locally in a key called user. We
 /src/App.js
 
 componentDidMount = () => { 
-    const loggedInUser = JSON.parse(localStorage.getItem("user"));
-    if(loggedInUser){
-    this.props.continueSession(loggedInUser)
-    } else {
-      // routerProps.history.push('/login')
-    }
-  }
-	```
-	
-	In my case, I added a componentDidMount function to App.js. When mounted a variable that holds the information that is found in the user key of the local storage. By the way,** the value in this storage needs to be a string**. This is why I convert the object to a string when storing, and parse the JSON from that string when recalling it.  I also created another action that basically continues the session for that user in local memory. Again, when a user actually logs out, the information is wiped locally,
-	
+const loggedInUser = JSON.parse(localStorage.getItem("user"));
+if(loggedInUser){
+this.props.continueSession(loggedInUser)
+} else {
+// routerProps.history.push('/login')
+}
+}
+```
+
+In my case, I added a componentDidMount function to App.js. When mounted a variable that holds the information that is found in the user key of the local storage. By the way,** the value in this storage needs to be a string**. This is why I convert the object to a string when storing, and parse the JSON from that string when recalling it.  I also created another action that basically continues the session for that user in local memory. Again, when a user actually logs out, the information is wiped locally,
+
 ```
 /src/actions/userLogout.js
-	
-	
-	const userLogout = () => {
-    return dispatch => {
-        dispatch({ type: 'START_ADDING_USER_REQUEST' })
-        const formData = {
-                
-            }
-         const configObj = {
-            method: "POST",
-            headers: {
-                "Accept": "application/json",
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify(formData)
-         }
-        fetch('http://localhost:3001/logout', configObj)
-        .then(resp => resp.json())
-        .then(session => {
-            if (session.status === 200) {
-              dispatch({type:"LOGOUT"})
-              localStorage.removeItem("user")
-            } else {
-                console.log(session.errors)
-            }
-          )
-          .catch(error => console.log('api errors:', error))
-        };
-    }
+
+
+const userLogout = () => {
+return dispatch => {
+dispatch({ type: 'START_ADDING_USER_REQUEST' })
+const formData = {
+
+}
+const configObj = {
+method: "POST",
+headers: {
+"Accept": "application/json",
+"Content-Type": "application/json"
+},
+body: JSON.stringify(formData)
+}
+fetch('http://localhost:3001/logout', configObj)
+.then(resp => resp.json())
+.then(session => {
+if (session.status === 200) {
+dispatch({type:"LOGOUT"})
+localStorage.removeItem("user")
+} else {
+console.log(session.errors)
+}
+)
+.catch(error => console.log('api errors:', error))
+};
+}
 
 export default userLogout
 ```
 
 
-This concludes our run-through of user authentication with a Ruby on Rails API and React-Redux. It's a lengthy process, but it's simple when you realize that you're merely making fetch requests for objects like we are used to doing with an API anyway.
+* This concludes our run-through of user authentication with a Ruby on Rails API and React-Redux. It's a lengthy process, but it's simple when you realize that you're merely making fetch requests for objects like we are used to doing with an API anyway.
