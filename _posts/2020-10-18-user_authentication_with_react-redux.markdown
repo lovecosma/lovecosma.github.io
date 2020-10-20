@@ -129,9 +129,9 @@ end
 
 
  Essentially, the login action will find the user that matches the email passed through params. If the user exists and their password is correct., (#bcrypt), that user is the user of this session. Then render that user as json and send it as a response. If the user does not exist or their password_digest couldn't be authenticated, it will send an error message. While we're at it, let's add a destroy action for logging out:
- 
+ 
  ```
- /app/controllers/sessions_controller.rb
+ /app/controllers/sessions_controller.rb
  
  ...
  
@@ -149,9 +149,9 @@ end
  ```
  /config/routes.rb
  
- Rails.application.routes.draw do
-  resources :users
-  post "/login", to: 'sessions#create'
+Rails.application.routes.draw do
+	resources :users
+	post "/login", to: 'sessions#create'
 	 post "/logout", to: 'sessions#destroy'
 end
 ```
@@ -162,14 +162,14 @@ If we run in the terminal:
 ```
 rails routes
 =>
-login POST   /login(.:format)                                                                         sessions#create
-logout POST   /logout(.:format)                                                                        sessions#destroy
-users GET    /users(.:format)                                                                         users#index
-POST   /users(.:format)                                                                         users#create
-user GET    /users/:id(.:format)                                                                     users#show
-PATCH  /users/:id(.:format)                                                                     users#update
-PUT    /users/:id(.:format)                                                                     users#update
-DELETE /users/:id(.:format)                                                                     users#destroy
+			login POST   /login(.:format)                                                                         sessions#create
+			logout POST   /logout(.:format)                                                                        sessions#destroy
+			users GET    /users(.:format)                                                                         users#index
+			POST   /users(.:format)                                                                         users#create
+			user GET    /users/:id(.:format)                                                                     users#show
+			PATCH  /users/:id(.:format)                                                                     users#update
+			PUT    /users/:id(.:format)                                                                     users#update
+			DELETE /users/:id(.:format)                                                                     users#destroy
 ```
 
 
