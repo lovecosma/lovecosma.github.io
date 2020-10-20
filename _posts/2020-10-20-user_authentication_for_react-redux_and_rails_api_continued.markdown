@@ -1,7 +1,7 @@
 ---
 layout: post
 title:      "User authentication for React-Redux and Rails API: Continued"
-date:       2020-10-20 15:09:26 +0000
+date:       2020-10-20 11:09:27 -0400
 permalink:  user_authentication_for_react-redux_and_rails_api_continued
 ---
 
