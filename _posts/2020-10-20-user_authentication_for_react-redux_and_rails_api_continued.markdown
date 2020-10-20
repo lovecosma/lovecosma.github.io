@@ -372,7 +372,7 @@ componentDidMount = () => {
             } else {
                 console.log(session.errors)
             }
-          })
+          )
           .catch(error => console.log('api errors:', error))
         };
     }
