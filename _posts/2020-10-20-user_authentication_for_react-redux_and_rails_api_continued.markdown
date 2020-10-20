@@ -271,9 +271,9 @@ export default App;
 
 Now running 'yarn start' should open a browser with a plain login form. This is the moment of truth. When we enter information for the sample user created in the previous post, we should receive a log to the console with the corresponding user object in the browser console.
 
-
+```
 {id: 1, email: "test@test.com", password_digest: "$2a$12$Y0t2nkuFNOYHEQhsIKPK1u49Z0XN9f3sD3MH2idhp6Qd/qUq353n.", created_at: "2020-10-20T01:06:20.158Z", updated_at: "2020-10-20T01:06:20.158Z"}
-
+```
 
 Now, whenever you call on the usersReducer, as long as the data is loaded, you will be able to access info about the user and whether or not they are loggin in. To logout, you just create a second action that posts to the logout route in Rails. However, what if the user refreshes the page. Since this is technically a single page application made with javascript, the information about the user will disappear. To avoid this, we will implement just a few lines of code to check if a user is logged in when the app is rendered.
 
@@ -303,7 +303,7 @@ fetch('http://localhost:3001/login', configObj)
 .then(user => {
 if (user) {
 localStorage.setItem('user', JSON.stringify(session.user)) // Store the user locally
-dispatch({type:"LOGIN", user: user}) //Then log them in
+dispatch({type:"LOGIN", user}) //Then log them in
 } else {
 console.log(user.errors)
 }
@@ -352,16 +352,12 @@ In my case, I added a componentDidMount function to App.js. When mounted a varia
 const userLogout = () => {
 return dispatch => {
 dispatch({ type: 'START_ADDING_USER_REQUEST' })
-const formData = {
-
-}
 const configObj = {
 method: "POST",
-headers: {
-"Accept": "application/json",
-"Content-Type": "application/json"
-},
-body: JSON.stringify(formData)
+	headers: {
+	"Accept": "application/json",
+	"Content-Type": "application/json"
+	}
 }
 fetch('http://localhost:3001/logout', configObj)
 .then(resp => resp.json())
