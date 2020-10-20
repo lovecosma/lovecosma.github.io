@@ -130,7 +130,7 @@ end
 
  Essentially, the login action will find the user that matches the email passed through params. If the user exists and their password is correct., (#bcrypt), that user is the user of this session. Then render that user as json and send it as a response. If the user does not exist or their password_digest couldn't be authenticated, it will send an error message. While we're at it, let's add a destroy action for logging out:
  
- ```
+ ```
  /app/controllers/sessions_controller.rb
  
  ...
