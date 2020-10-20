@@ -377,4 +377,4 @@ export default userLogout
 ```
 
 
-* This concludes our run-through of user authentication with a Ruby on Rails API and React-Redux. It's a lengthy process, but it's simple when you realize that you're merely making fetch requests for objects like we are used to doing with an API anyway.
+This concludes our run-through of user authentication with a Ruby on Rails API and React-Redux. It's a lengthy process, but it's simple when you realize that you're merely making fetch requests for objects like we are used to doing with an API anyway.
