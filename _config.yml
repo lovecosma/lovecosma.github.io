@@ -1,11 +1,11 @@
 # Site settings
 author: Matthew Williams
-title: So You've Got Talent? 
+title: So, You've Got Talent? 
 header-img: img/home-bg.png
 email: williamsmatthew333@gmail.com
 copyright_name: Matthew Williams
 description: > # this means to ignore newlines until "baseurl:"
-  How to Pay Bills
+  A Artist's Guide to Keeping Calm and Coding On
 baseurl: "" # the subpath of your site, e.g. /blog
 twitter_username: 
 github_username:  lovecosma
